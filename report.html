@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>完整分析報告｜Give Me Some Credit</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f1e3d;
+    --navy-mid: #1a2f5a;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --cream: #f5f0e8;
+    --cream-dark: #ede5d4;
+    --text-light: #f0ece3;
+    --text-muted: #a09880;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--navy);
+    line-height: 1.7;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--navy);
+    padding: 18px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--gold);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    color: var(--gold);
+    font-size: 1.1rem;
+  }
+
+  nav a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  nav a:hover { opacity: 1; color: var(--gold); }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--navy);
+    padding: 64px 48px;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    background: rgba(201,168,76,0.15);
+    color: var(--gold);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border: 1px solid rgba(201,168,76,0.3);
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    color: var(--text-light);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .hero-desc {
+    color: rgba(240,236,227,0.6);
+    font-size: 0.95rem;
+    max-width: 600px;
+    margin-bottom: 32px;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    font-size: 0.78rem;
+    color: rgba(240,236,227,0.4);
+  }
+
+  .meta-item strong {
+    color: var(--gold-light);
+    display: block;
+    font-size: 0.82rem;
+    margin-bottom: 2px;
+  }
+
+  /* ── NAV TABS ── */
+  .tab-nav {
+    background: var(--navy-mid);
+    padding: 0 48px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .tab-btn {
+    padding: 14px 20px;
+    color: rgba(240,236,227,0.45);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .tab-btn:hover { color: rgba(240,236,227,0.8); }
+  .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* ── CONTENT ── */
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 48px;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .section-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+
+  .section-sub {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(15,30,61,0.1);
+  }
+
+  h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--navy);
+    margin: 28px 0 12px;
+  }
+
+  p {
+    font-size: 0.92rem;
+    color: #3a3020;
+    margin-bottom: 12px;
+  }
+
+  /* ── STATS GRID ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .stat-card {
+    background: var(--navy);
+    padding: 20px;
+    color: var(--text-light);
+  }
+
+  .stat-card .num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--gold-light);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-card .lbl {
+    font-size: 0.75rem;
+    color: rgba(240,236,227,0.5);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── TABLE ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin: 16px 0 24px;
+  }
+
+  thead th {
+    background: var(--navy);
+    color: var(--text-light);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  tbody td {
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(15,30,61,0.08);
+    color: #3a3020;
+    vertical-align: top;
+  }
+
+  tbody tr:nth-child(even) td { background: var(--cream-dark); }
+  tbody tr:hover td { background: rgba(201,168,76,0.06); }
+
+  .hl td { background: rgba(201,168,76,0.12) !important; font-weight: 600; }
+
+  /* ── NOTE / WARN / RESULT BOXES ── */
+  .note, .warn, .result-box, .finding {
+    padding: 12px 16px;
+    margin: 12px 0 20px;
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+
+  .note   { background: #e8f0fe; border-left: 3px solid #3a6bc9; }
+  .warn   { background: #fff8e1; border-left: 3px solid #e6980a; }
+  .result-box { background: #e8f5e9; border-left: 3px solid #2e7d32; }
+  .finding { background: rgba(15,30,61,0.04); border-left: 3px solid var(--navy); }
+
+  /* ── FEATURE BARS ── */
+  .feature-bar-list { margin: 16px 0 24px; }
+
+  .feature-bar-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+
+  .feat-name {
+    font-size: 0.78rem;
+    color: var(--navy);
+    width: 240px;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  .feat-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(15,30,61,0.08);
+    overflow: hidden;
+  }
+
+  .feat-fill {
+    height: 100%;
+    background: var(--navy);
+    transition: width 1s ease;
+  }
+
+  .feat-fill.gold { background: var(--gold); }
+
+  .feat-val {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    width: 40px;
+    text-align: right;
+  }
+
+  /* ── MODEL COMPARISON ── */
+  .model-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .model-card {
+    border: 1.5px solid rgba(15,30,61,0.12);
+    padding: 20px;
+    background: white;
+  }
+
+  .model-card.best { border-color: var(--gold); background: rgba(201,168,76,0.04); }
+
+  .model-name {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .model-card.best .model-name { color: var(--gold); }
+
+  .model-auc {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .model-card.best .model-auc { color: var(--navy); }
+
+  .model-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* ── THRESHOLD VISUAL ── */
+  .threshold-viz {
+    background: var(--navy);
+    padding: 28px;
+    margin: 20px 0;
+    color: var(--text-light);
+  }
+
+  .threshold-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .threshold-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .threshold-item {
+    text-align: center;
+  }
+
+  .t-ratio {
+    font-size: 0.72rem;
+    color: rgba(240,236,227,0.45);
+    margin-bottom: 8px;
+    letter-spacing: 0.06em;
+  }
+
+  .t-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    color: var(--gold-light);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .t-desc {
+    font-size: 0.75rem;
+    color: rgba(240,236,227,0.45);
+    line-height: 1.5;
+  }
+
+  /* ── DEMO CTA ── */
+  .demo-cta {
+    background: var(--navy);
+    padding: 48px;
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .demo-cta h2 {
+    font-family: 'DM Serif Display', serif;
+    color: var(--text-light);
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+  }
+
+  .demo-cta p {
+    color: rgba(240,236,227,0.5);
+    margin-bottom: 24px;
+    font-size: 0.88rem;
+  }
+
+  .cta-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    border: 1.5px solid var(--gold);
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 0.83rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  .cta-btn:hover { background: var(--gold); color: var(--navy); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #080f1e;
+    padding: 20px 48px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: rgba(240,236,227,0.25);
+  }
+
+  @media (max-width: 768px) {
+    header, .tab-nav, .demo-cta, footer { padding-left: 20px; padding-right: 20px; }
+    .hero { padding: 44px 20px; }
+    .content { padding: 36px 20px; }
+    .model-grid { grid-template-columns: 1fr; }
+    .threshold-row { grid-template-columns: 1fr; }
+    .feat-name { width: 160px; font-size: 0.72rem; }
+    .meta-row { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Give Me Some Credit</div>
+  <nav><a href="index.html">← 回到 Demo</a></nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">完整分析報告｜XChange Data 組</div>
+  <h1>信用違約預測<br>完整分析報告</h1>
+  <p class="hero-desc">從資料探索、清洗、特徵工程到建模，以及最佳核貸門檻的損益模擬</p>
+  <div class="meta-row">
+    <div class="meta-item"><strong>資料集</strong>Kaggle - Give Me Some Credit</div>
+    <div class="meta-item"><strong>資料量</strong>149,717 筆（清洗後）</div>
+    <div class="meta-item"><strong>最佳模型</strong>XGBoost（AUC 0.857）</div>
+    <div class="meta-item"><strong>最佳門檻</strong>0.50（損益比 1:10）</div>
+  </div>
+</section>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('eda')">EDA 發現</button>
+  <button class="tab-btn" onclick="switchTab('cleaning')">資料清洗</button>
+  <button class="tab-btn" onclick="switchTab('features')">特徵工程</button>
+  <button class="tab-btn" onclick="switchTab('modeling')">建模結果</button>
+  <button class="tab-btn" onclick="switchTab('business')">業務建議</button>
+</div>
+
+<div class="content">
+
+  <!-- ── EDA ── -->
+  <div class="tab-panel active" id="tab-eda">
+    <div class="section-heading">探索性資料分析</div>
+    <div class="section-sub">理解原始資料的結構、缺失值、異常值與特徵判別力</div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="num">150K</div><div class="lbl">原始筆數</div></div>
+      <div class="stat-card"><div class="num">10</div><div class="lbl">特徵欄位</div></div>
+      <div class="stat-card"><div class="num">6.7%</div><div class="lbl">真實壞帳率</div></div>
+      <div class="stat-card"><div class="num">19.8%</div><div class="lbl">收入缺失率</div></div>
+    </div>
+
+    <h3>缺失值分析</h3>
+    <table>
+      <thead><tr><th>欄位</th><th>缺失筆數</th><th>缺失率</th><th>備註</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td>MonthlyIncome</td><td>29,731</td><td>19.82%</td><td>缺失者違約率（5.61%）反而低於有資料者（6.95%）</td></tr>
+        <tr><td>NumberOfDependents</td><td>3,924</td><td>2.62%</td><td>型別為 float，清洗後轉 int</td></tr>
+        <tr><td>其他 9 欄</td><td>0</td><td>0%</td><td>無缺失</td></tr>
+      </tbody>
+    </table>
+
+    <div class="finding">💡 收入缺失本身是一個訊號——缺失者可能是退休族或自營業者，財務穩定但無固定薪資。我們在特徵工程中保留了 income_missing flag 讓模型學習這個模式。</div>
+
+    <h3>類別不平衡</h3>
+    <table>
+      <thead><tr><th>類別</th><th>筆數</th><th>比例</th></tr></thead>
+      <tbody>
+        <tr><td>正常（0）</td><td>139,974</td><td>93.3%</td></tr>
+        <tr class="hl"><td>違約（1）</td><td>10,026</td><td>6.7%</td></tr>
+      </tbody>
+    </table>
+    <div class="warn">⚠ 嚴重不平衡——若模型全猜「正常」準確率仍有 93.3%，對業務毫無意義。評估指標改用 AUC-ROC，建模時加入 class_weight 處理。</div>
+
+    <h3>關鍵特徵判別力</h3>
+    <table>
+      <thead><tr><th>特徵</th><th>正常者</th><th>違約者</th><th>判別力</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td>RevolvingUtilization（中位數）</td><td>0.13</td><td>0.84</td><td>最強（差距 6.5 倍）</td></tr>
+        <tr class="hl"><td>age（平均）</td><td>52.75 歲</td><td>45.93 歲</td><td>強（年輕者風險較高）</td></tr>
+        <tr class="hl"><td>30-59天逾期次數（平均）</td><td>0.28 次</td><td>2.39 次</td><td>強（差距 8.5 倍）</td></tr>
+        <tr><td>MonthlyIncome（平均）</td><td>$6,748</td><td>$5,631</td><td>弱（受缺失影響）</td></tr>
+        <tr><td>DebtRatio（中位數）</td><td>0.36</td><td>0.43</td><td>弱（受極端值干擾）</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note">💡 RevolvingUtilization 的 Pearson 相關係數只有 -0.002，看似無關，但這是因為 max = 50,708 的極端值把統計拉壞了。從分佈圖中位數（0.84 vs 0.13）可以看出它是最強的判別特徵，清洗後果然躍升 SHAP 第二名。</div>
+  </div>
+
+  <!-- ── CLEANING ── -->
+  <div class="tab-panel" id="tab-cleaning">
+    <div class="section-heading">資料清洗</div>
+    <div class="section-sub">處理缺失值、異常值與特殊編碼，確保進入模型的數值都有業務意義</div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="num">283</div><div class="lbl">刪除筆數（0.19%）</div></div>
+      <div class="stat-card"><div class="num">3</div><div class="lbl">新增 flag 欄位</div></div>
+      <div class="stat-card"><div class="num">149,717</div><div class="lbl">清洗後筆數</div></div>
+      <div class="stat-card"><div class="num">14</div><div class="lbl">清洗後欄位數</div></div>
+    </div>
+
+    <h3>各欄位清洗決策</h3>
+    <table>
+      <thead><tr><th>欄位</th><th>問題</th><th>處理方式</th><th>原因</th></tr></thead>
+      <tbody>
+        <tr><td>RevolvingUtilization</td><td>max = 50,708（理論應 ≤ 1）</td><td>Cap 到 1</td><td>信用使用率不可能超過 100%</td></tr>
+        <tr><td>age</td><td>0 歲（1筆）、>100 歲（13筆）</td><td>直接刪除</td><td>不合理，共 14 筆佔比 0.01%</td></tr>
+        <tr class="hl"><td>DebtRatio</td><td>max = 329,664；收入缺失時中位數達 1,159</td><td>先設 NaN 再 cap 到 1</td><td>收入缺失時 DebtRatio 計算失真（差距 3,863 倍），不可信</td></tr>
+        <tr><td>MonthlyIncome</td><td>max = 3,008,750；1,634 筆填 0</td><td>填 0 設為缺失 → cap 到 30,000 → 中位數填補</td><td>三個不同問題分開處理</td></tr>
+        <tr><td>逾期次數三欄</td><td>出現 96/98 特殊編碼</td><td>刪除 269 筆</td><td>金融資料特殊編碼，代表「不適用」，非真實次數</td></tr>
+        <tr><td>NumberOfDependents</td><td>缺失 3,924 筆，型別 float</td><td>眾數（0）填補，轉 int</td><td>扶養人數不應有小數</td></tr>
+      </tbody>
+    </table>
+
+    <h3>新增 Flag 欄位</h3>
+    <table>
+      <thead><tr><th>欄位</th><th>說明</th><th>為什麼加</th></tr></thead>
+      <tbody>
+        <tr><td>income_missing</td><td>收入是否原本缺失（0/1）</td><td>缺失者違約率反而較低，缺失本身是訊號</td></tr>
+        <tr><td>income_zero</td><td>收入是否原本填 0（0/1）</td><td>填 0 可能是失業或輸入錯誤，保留資訊</td></tr>
+        <tr><td>has_dependents</td><td>是否有申報扶養人（0/1）</td><td>有無扶養人是財務負擔的訊號</td></tr>
+      </tbody>
+    </table>
+
+    <div class="warn">⚠ Flag 欄位必須在填補缺失值之前新增，才能記錄原始的缺失狀態。若先填補再加 flag，所有人的 flag 都會是 0，失去意義。</div>
+  </div>
+
+  <!-- ── FEATURES ── -->
+  <div class="tab-panel" id="tab-features">
+    <div class="section-heading">特徵工程</div>
+    <div class="section-sub">從原始欄位創造更有業務意義的新特徵，讓模型更好學習</div>
+
+    <h3>新增特徵一覽</h3>
+    <table>
+      <thead><tr><th>特徵</th><th>提案人</th><th>計算方式</th><th>業務意涵</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td>weighted_late_score</td><td>Terry</td><td>30-59天×1 + 60-89天×2 + 90天以上×3</td><td>逾期越久風險越高，違約率分別 31%、53%、55%</td></tr>
+        <tr><td>ever_late</td><td>Irene</td><td>三欄加總 > 0 則為 1</td><td>曾逾期者違約率 21.98% vs 未逾期者 2.73%</td></tr>
+        <tr><td>high_utilization</td><td>Irene</td><td>RevolvingUtil > 0.6 則為 1</td><td>高使用率違約率 18.18% vs 低使用率 3.07%</td></tr>
+        <tr><td>income_group</td><td>Ines</td><td>低（≤4,000）/ 中 / 高（>7,400）</td><td>低收入違約率 9.02%，高收入 4.73%</td></tr>
+        <tr><td>age_group</td><td>Irene</td><td>young / mid / senior / elder</td><td>年輕 11.10% → 老年 2.98%，單調遞減</td></tr>
+        <tr><td>monthly_debt</td><td>Irene</td><td>MonthlyIncome × DebtRatio</td><td>實際月負債金額，比比率更直觀</td></tr>
+        <tr><td>income_per_dependent</td><td>Irene</td><td>MonthlyIncome ÷（扶養人數+1）</td><td>反映真實家庭財務壓力</td></tr>
+      </tbody>
+    </table>
+
+    <h3>特徵判別力驗證</h3>
+    <table>
+      <thead><tr><th>特徵</th><th>分組</th><th>違約率</th><th>差距</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td rowspan="2">ever_late</td><td>曾逾期（1）</td><td>21.98%</td><td rowspan="2">8 倍</td></tr>
+        <tr class="hl"><td>未逾期（0）</td><td>2.73%</td></tr>
+        <tr><td rowspan="2">high_utilization</td><td>高使用率（>0.6）</td><td>18.18%</td><td rowspan="2">6 倍</td></tr>
+        <tr><td>低使用率（≤0.6）</td><td>3.07%</td></tr>
+        <tr><td rowspan="4">age_group</td><td>年輕（≤30歲）</td><td>11.10%</td><td rowspan="4">4 倍</td></tr>
+        <tr><td>中年（30-45歲）</td><td>9.23%</td></tr>
+        <tr><td>壯年（45-60歲）</td><td>6.76%</td></tr>
+        <tr><td>老年（>60歲）</td><td>2.98%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── MODELING ── -->
+  <div class="tab-panel" id="tab-modeling">
+    <div class="section-heading">建模結果</div>
+    <div class="section-sub">三個模型的比較，以及 SHAP 特徵重要性分析</div>
+
+    <h3>三模型 AUC 比較</h3>
+    <div class="model-grid">
+      <div class="model-card best">
+        <div class="model-name">★ 邏輯迴歸</div>
+        <div class="model-auc">0.857</div>
+        <div class="model-note">AUC 最高；Recall 74%，積極抓壞帳；可解釋性強</div>
+      </div>
+      <div class="model-card">
+        <div class="model-name">隨機森林</div>
+        <div class="model-auc">0.827</div>
+        <div class="model-note">AUC 最低；Recall 僅 14%，過於保守；需調參改善</div>
+      </div>
+      <div class="model-card">
+        <div class="model-name">XGBoost</div>
+        <div class="model-auc">0.854</div>
+        <div class="model-note">業界標準；AUC 與 LR 相近；搭配 SHAP 可解釋</div>
+      </div>
+    </div>
+
+    <div class="note">💡 邏輯迴歸 AUC 略高於 XGBoost（0.857 vs 0.854），差距僅 0.003，可能因為本資料集特徵工程已充分萃取線性關係。XGBoost 尚未調參，有較大提升空間。</div>
+
+    <h3>Confusion Matrix 比較（測試集 29,944 筆）</h3>
+    <table>
+      <thead><tr><th>指標</th><th>邏輯迴歸</th><th>隨機森林</th><th>XGBoost</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td>AUC-ROC</td><td>0.8573</td><td>0.8269</td><td>0.8543</td></tr>
+        <tr><td>違約者 Recall</td><td>0.74</td><td>0.14</td><td>0.71</td></tr>
+        <tr><td>違約者 Precision</td><td>0.21</td><td>0.50</td><td>0.22</td></tr>
+        <tr><td>抓到的壞帳（共 1,976）</td><td>1,470 人</td><td>269 人</td><td>1,402 人</td></tr>
+        <tr><td>誤判正常人</td><td>5,471 人</td><td>274 人</td><td>4,846 人</td></tr>
+      </tbody>
+    </table>
+
+    <h3>SHAP 特徵重要性（XGBoost）</h3>
+    <div class="feature-bar-list">
+      <div class="feature-bar-item">
+        <div class="feat-name">weighted_late_score</div>
+        <div class="feat-track"><div class="feat-fill gold" style="width:95%"></div></div>
+        <div class="feat-val">最高</div>
+      </div>
+      <div class="feature-bar-item">
+        <div class="feat-name">RevolvingUtilization</div>
+        <div class="feat-track"><div class="feat-fill gold" style="width:72%"></div></div>
+        <div class="feat-val">高</div>
+      </div>
+      <div class="feature-bar-item">
+        <div class="feat-name">age</div>
+        <div class="feat-track"><div class="feat-fill" style="width:28%"></div></div>
+        <div class="feat-val">中</div>
+      </div>
+      <div class="feature-bar-item">
+        <div class="feat-name">NumberOfOpenCreditLines</div>
+        <div class="feat-track"><div class="feat-fill" style="width:22%"></div></div>
+        <div class="feat-val">中</div>
+      </div>
+      <div class="feature-bar-item">
+        <div class="feat-name">DebtRatio</div>
+        <div class="feat-track"><div class="feat-fill" style="width:17%"></div></div>
+        <div class="feat-val">中</div>
+      </div>
+      <div class="feature-bar-item">
+        <div class="feat-name">MonthlyIncome</div>
+        <div class="feat-track"><div class="feat-fill" style="width:11%"></div></div>
+        <div class="feat-val">低</div>
+      </div>
+      <div class="feature-bar-item">
+        <div class="feat-name">monthly_debt（新增）</div>
+        <div class="feat-track"><div class="feat-fill" style="width:10%"></div></div>
+        <div class="feat-val">低</div>
+      </div>
+    </div>
+
+    <div class="result-box">✅ 特徵工程驗證：三個逾期欄位個別 SHAP 重要性極低，但合併成 weighted_late_score 後躍升第一名，遠超其他所有特徵——證明加權合併的設計正確，特徵工程有效。</div>
+  </div>
+
+  <!-- ── BUSINESS ── -->
+  <div class="tab-panel" id="tab-business">
+    <div class="section-heading">業務建議</div>
+    <div class="section-sub">基於損益模擬，找出最大化公司收益的最佳核貸門檻</div>
+
+    <h3>損益假設</h3>
+    <table>
+      <thead><tr><th>項目</th><th>假設值</th><th>依據</th></tr></thead>
+      <tbody>
+        <tr><td>每筆放款利潤</td><td>放款金額的 8%</td><td>消費金融業淨利潤一般估計 5～10%</td></tr>
+        <tr><td>壞帳損失</td><td>放款金額的 80%</td><td>回收率約 10～30%，損失約 70～90%</td></tr>
+        <tr class="hl"><td>損益比（基準）</td><td>1:10</td><td>放行 1 個壞帳 = 損失 10 個好客戶的利潤</td></tr>
+      </tbody>
+    </table>
+
+    <h3>不同損益比下的最佳門檻</h3>
+    <div class="threshold-viz">
+      <div class="threshold-title">Profit Simulation — Optimal Threshold by Loss Ratio</div>
+      <div class="threshold-row">
+        <div class="threshold-item">
+          <div class="t-ratio">損益比 1:5（保守）</div>
+          <div class="t-val">0.72</div>
+          <div class="t-desc">壞帳損失小<br>可放寬放款<br>門檻較高</div>
+        </div>
+        <div class="threshold-item">
+          <div class="t-ratio">損益比 1:10（基準）</div>
+          <div class="t-val" style="color: var(--gold);">0.50</div>
+          <div class="t-desc">我們的假設<br>平衡點<br>最高損益 17,382 units</div>
+        </div>
+        <div class="threshold-item">
+          <div class="t-ratio">損益比 1:15（積極攔截）</div>
+          <div class="t-val">0.40</div>
+          <div class="t-desc">壞帳損失大<br>需積極攔截<br>門檻較低</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>基準情境（門檻 0.50）下的結果</h3>
+    <table>
+      <thead><tr><th>類別</th><th>人數</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td>✅ 放行好客戶</td><td>23,122 人</td><td>正確核准，產生利潤</td></tr>
+        <tr class="hl"><td>❌ 放行壞帳（漏網）</td><td>574 人</td><td>應拒絕但放行，造成損失</td></tr>
+        <tr><td>⚠ 拒絕好客戶（誤殺）</td><td>4,846 人</td><td>應放行但拒絕，損失業務機會</td></tr>
+        <tr><td>✅ 攔截壞帳</td><td>1,402 人</td><td>正確拒絕，避免損失（佔全部壞帳 71%）</td></tr>
+      </tbody>
+    </table>
+
+    <div class="result-box">
+      ✅ <strong>核心建議：</strong>在損益比 1:10 的假設下，建議將核貸門檻設在違約機率 0.50。當申請人預測違約機率 ≥ 50% 時拒絕放款，可讓公司整體損益最大化。<br><br>
+      門檻不是越嚴越好——門檻過高會拒絕太多好客戶，損失業務收入。實際業務應以真實損益數字替換假設值，最佳門檻會隨之調整。
+    </div>
+
+    <h3>最重要的風險預警特徵</h3>
+    <table>
+      <thead><tr><th>排名</th><th>特徵</th><th>高風險訊號</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td>1</td><td>逾期行為歷史</td><td>有逾期紀錄，且逾期天數越長風險越高</td></tr>
+        <tr class="hl"><td>2</td><td>循環信用使用率</td><td>信用額度使用率超過 60%，尤其接近 100%</td></tr>
+        <tr><td>3</td><td>年齡</td><td>30 歲以下年輕族群違約率（11.10%）最高</td></tr>
+        <tr><td>4</td><td>月收入</td><td>月收入低於 4,000 美元的低收入族群（9.02%）</td></tr>
+      </tbody>
+    </table>
+
+    <h3>後續改善方向</h3>
+    <table>
+      <thead><tr><th>方向</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td>XGBoost 調參</td><td>Grid Search 或 Bayesian Optimization，AUC 有機會提升至 0.87～0.89</td></tr>
+        <tr><td>MICE 填補缺失值</td><td>業師建議，比中位數填補更精準</td></tr>
+        <tr><td>交叉特徵</td><td>業師建議嘗試特徵交叉項（如年齡 × 逾期次數）</td></tr>
+        <tr><td>以真實損益數據替換假設</td><td>取得真實放款利潤和壞帳損失後重跑模擬</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CTA -->
+  <div class="demo-cta">
+    <h2>親自試試信用風險預測</h2>
+    <p>輸入你的財務條件，看看 AI 給你打幾分</p>
+    <a href="index.html" class="cta-btn">回到互動 Demo →</a>
+  </div>
+
+</div>
+
+<footer>
+  <span>Give Me Some Credit｜XChange 互聯網大學 第九屆 Data 組</span>
+  <span>Irene × Terry × Ines</span>
+</footer>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+
+</body>
+</html>
